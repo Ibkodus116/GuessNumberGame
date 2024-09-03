@@ -1,7 +1,11 @@
 // Initialize variables
-let secretNumber = Math.floor(Math.random() * 20) + 1;
+let highest = 20;
+let secretNumber = Math.floor(Math.random() * highest) + 1;
 let score = 20;
-let highscore = 0;
+let highscore = localStorage.getItem('highscore') || 0;
+
+// Display the stored highscore on page load
+document.querySelector('.highscore').textContent = highscore;
 
 // Function to display a message
 const displayMessage = function(message) {
@@ -15,16 +19,19 @@ document.querySelector('.check').addEventListener('click', function() {
   // When there is no input
   if (!guess) {
     displayMessage('⛔ No number!');
-
+    // When the Number is out of range
+} else if(guess > highest || guess < 1){
+    displayMessage('🤦🏽 Number is out of range please try another number');
   // When player wins
   } else if (guess === secretNumber) {
     displayMessage('🎉 Correct Number!');
     document.querySelector('.number').textContent = secretNumber;
-    document.querySelector('body').style.backgroundColor = '#138a1a';
+    document.querySelector('body').style.backgroundColor = '#6600cc';
     document.querySelector('.number').style.width = '30rem';
 
     if (score > highscore) {
       highscore = score;
+      localStorage.setItem('highscore', highscore);
       document.querySelector('.highscore').textContent = highscore;
     }
 
@@ -44,7 +51,7 @@ document.querySelector('.check').addEventListener('click', function() {
 // Function to reset the game
 document.querySelector('.again').addEventListener('click', function() {
   score = 20;
-  secretNumber = Math.floor(Math.random() * 20) + 1;
+  secretNumber = Math.floor(Math.random() * highest) + 1;
 
   displayMessage('Start guessing...');
   document.querySelector('.score').textContent = score;
@@ -54,3 +61,10 @@ document.querySelector('.again').addEventListener('click', function() {
   document.querySelector('body').style.backgroundColor = '#222';
   document.querySelector('.number').style.width = '15rem';
 });
+
+// Function to reset the highscore
+document.querySelector('.reset-highscore').addEventListener('click', function() {
+    highscore = 0;
+    localStorage.removeItem('highscore');
+    document.querySelector('.highscore').textContent = highscore;
+  });
